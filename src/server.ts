@@ -48,6 +48,8 @@ let createSys = (function wrap(sw: ServiceWorkerGlobalScope) {
     
     async function addEventListener(event: string, handler: string, options: XEventHandlerOptions) {
       let register = await store.getItem<Register>(event);
+      register = register ? register : new Map();
+
       let key = randomKey();
       register.set(key, [handler, options]);
 
@@ -56,7 +58,12 @@ let createSys = (function wrap(sw: ServiceWorkerGlobalScope) {
   
     async function removeEventListener(event: string, key: string) {
       let register = await store.getItem<Register>(event);
-      return register.delete(key);
+
+      if (register) {
+        return register.delete(key);
+      } else {
+        return false;
+      }
     }
   
     function listen() {
@@ -88,18 +95,20 @@ let createSys = (function wrap(sw: ServiceWorkerGlobalScope) {
               let { event, data } = message.value;
               let register = await store.getItem<Register>(event);
     
-              register.forEach(([handler, options], k) => {
-                let fn: XEventHandler<any> = eval(handler);
-                fn({ name: event, state: options.state, data });
+              if (register) {
+                register.forEach(([handler, options], k) => {
+                  let fn: XEventHandler<any> = eval(handler);
+                  fn({ name: event, state: options.state, data });
 
-                options.repeat = options.repeat - 1;
-                
-                if (options.repeat > 0) {
-                  register.set(k, [handler, options]);
-                } else {
-                  register.delete(k);
-                }
-              });
+                  options.repeat = options.repeat - 1;
+                  
+                  if (options.repeat > 0) {
+                    register.set(k, [handler, options]);
+                  } else {
+                    register.delete(k);
+                  }
+                });
+              }
               break;
             }
           }

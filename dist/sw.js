@@ -245,6 +245,7 @@ var createSys = (function wrap(sw) {
                         case 0: return [4 /*yield*/, store.getItem(event)];
                         case 1:
                             register = _a.sent();
+                            register = register ? register : new Map();
                             key = randomKey();
                             register.set(key, [handler, options]);
                             return [2 /*return*/, key];
@@ -260,7 +261,13 @@ var createSys = (function wrap(sw) {
                         case 0: return [4 /*yield*/, store.getItem(event)];
                         case 1:
                             register = _a.sent();
-                            return [2 /*return*/, register.delete(key)];
+                            if (register) {
+                                return [2 /*return*/, register.delete(key)];
+                            }
+                            else {
+                                return [2 /*return*/, false];
+                            }
+                            return [2 /*return*/];
                     }
                 });
             });
@@ -306,18 +313,20 @@ var createSys = (function wrap(sw) {
                             return [4 /*yield*/, store.getItem(event_3)];
                         case 9:
                             register_1 = _f.sent();
-                            register_1.forEach(function (_a, k) {
-                                var handler = _a[0], options = _a[1];
-                                var fn = eval(handler);
-                                fn({ name: event_3, state: options.state, data: data_1 });
-                                options.repeat = options.repeat - 1;
-                                if (options.repeat > 0) {
-                                    register_1.set(k, [handler, options]);
-                                }
-                                else {
-                                    register_1.delete(k);
-                                }
-                            });
+                            if (register_1) {
+                                register_1.forEach(function (_a, k) {
+                                    var handler = _a[0], options = _a[1];
+                                    var fn = eval(handler);
+                                    fn({ name: event_3, state: options.state, data: data_1 });
+                                    options.repeat = options.repeat - 1;
+                                    if (options.repeat > 0) {
+                                        register_1.set(k, [handler, options]);
+                                    }
+                                    else {
+                                        register_1.delete(k);
+                                    }
+                                });
+                            }
                             return [3 /*break*/, 10];
                         case 10: return [2 /*return*/];
                     }
