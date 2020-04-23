@@ -132,7 +132,7 @@ exports.makeMessage = makeMessage;
 function readMessage(data) {
     if (data) {
         var ns = data.ns, action = data.action, value = data.value;
-        if (ns === 'X' && isValidAction(action) && value) {
+        if (ns === 'XEVENT' && isValidAction(action) && value) {
             return data;
         }
     }

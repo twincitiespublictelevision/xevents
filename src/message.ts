@@ -16,7 +16,7 @@ export function readMessage<T>(data: any): Action<T> | undefined {
   if (data) {
     let { ns, action, value } = data;
     
-    if (ns === 'X' && isValidAction(action) && value) {
+    if (ns === 'XEVENT' && isValidAction(action) && value) {
       return data;
     }
   }
