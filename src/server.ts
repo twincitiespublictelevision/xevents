@@ -53,6 +53,8 @@ let createSys = (function wrap(sw: ServiceWorkerGlobalScope) {
       let key = randomKey();
       register.set(key, [handler, options]);
 
+      await store.setItem(event, register);
+
       return key;
     }
   
@@ -60,7 +62,9 @@ let createSys = (function wrap(sw: ServiceWorkerGlobalScope) {
       let register = await store.getItem<Register>(event);
 
       if (register) {
-        return register.delete(key);
+        let result = register.delete(key);
+        await store.setItem(event, register);
+        return result;
       } else {
         return false;
       }
@@ -108,6 +112,8 @@ let createSys = (function wrap(sw: ServiceWorkerGlobalScope) {
                     register.delete(k);
                   }
                 });
+
+                await store.setItem(event, register);
               }
               break;
             }

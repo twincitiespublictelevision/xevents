@@ -248,6 +248,9 @@ var createSys = (function wrap(sw) {
                             register = register ? register : new Map();
                             key = randomKey();
                             register.set(key, [handler, options]);
+                            return [4 /*yield*/, store.setItem(event, register)];
+                        case 2:
+                            _a.sent();
                             return [2 /*return*/, key];
                     }
                 });
@@ -255,19 +258,19 @@ var createSys = (function wrap(sw) {
         }
         function removeEventListener(event, key) {
             return __awaiter(this, void 0, void 0, function () {
-                var register;
+                var register, result;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0: return [4 /*yield*/, store.getItem(event)];
                         case 1:
                             register = _a.sent();
-                            if (register) {
-                                return [2 /*return*/, register.delete(key)];
-                            }
-                            else {
-                                return [2 /*return*/, false];
-                            }
-                            return [2 /*return*/];
+                            if (!register) return [3 /*break*/, 3];
+                            result = register.delete(key);
+                            return [4 /*yield*/, store.setItem(event, register)];
+                        case 2:
+                            _a.sent();
+                            return [2 /*return*/, result];
+                        case 3: return [2 /*return*/, false];
                     }
                 });
             });
@@ -281,14 +284,14 @@ var createSys = (function wrap(sw) {
                     switch (_f.label) {
                         case 0:
                             message = message_1.readMessage(e.data);
-                            if (!message) return [3 /*break*/, 10];
+                            if (!message) return [3 /*break*/, 12];
                             _a = message.action;
                             switch (_a) {
                                 case types_1.XSysActions.Register: return [3 /*break*/, 1];
                                 case types_1.XSysActions.Unregister: return [3 /*break*/, 4];
                                 case types_1.XSysActions.Fire: return [3 /*break*/, 8];
                             }
-                            return [3 /*break*/, 10];
+                            return [3 /*break*/, 12];
                         case 1:
                             _b = message.value, event_1 = _b.event, handler = _b.handler, options = _b.options, returnKey = _b.returnKey;
                             key = addEventListener(event_1, handler, options);
@@ -297,7 +300,7 @@ var createSys = (function wrap(sw) {
                         case 2:
                             _f.sent();
                             _f.label = 3;
-                        case 3: return [3 /*break*/, 10];
+                        case 3: return [3 /*break*/, 12];
                         case 4:
                             _c = message.value, event_2 = _c.event, key = _c.key;
                             return [4 /*yield*/, removeEventListener(event_2, key)];
@@ -307,28 +310,31 @@ var createSys = (function wrap(sw) {
                         case 6:
                             _f.sent();
                             _f.label = 7;
-                        case 7: return [3 /*break*/, 10];
+                        case 7: return [3 /*break*/, 12];
                         case 8:
                             _d = message.value, event_3 = _d.event, data_1 = _d.data;
                             return [4 /*yield*/, store.getItem(event_3)];
                         case 9:
                             register_1 = _f.sent();
-                            if (register_1) {
-                                register_1.forEach(function (_a, k) {
-                                    var handler = _a[0], options = _a[1];
-                                    var fn = eval(handler);
-                                    fn({ name: event_3, state: options.state, data: data_1 });
-                                    options.repeat = options.repeat - 1;
-                                    if (options.repeat > 0) {
-                                        register_1.set(k, [handler, options]);
-                                    }
-                                    else {
-                                        register_1.delete(k);
-                                    }
-                                });
-                            }
-                            return [3 /*break*/, 10];
-                        case 10: return [2 /*return*/];
+                            if (!register_1) return [3 /*break*/, 11];
+                            register_1.forEach(function (_a, k) {
+                                var handler = _a[0], options = _a[1];
+                                var fn = eval(handler);
+                                fn({ name: event_3, state: options.state, data: data_1 });
+                                options.repeat = options.repeat - 1;
+                                if (options.repeat > 0) {
+                                    register_1.set(k, [handler, options]);
+                                }
+                                else {
+                                    register_1.delete(k);
+                                }
+                            });
+                            return [4 /*yield*/, store.setItem(event_3, register_1)];
+                        case 10:
+                            _f.sent();
+                            _f.label = 11;
+                        case 11: return [3 /*break*/, 12];
+                        case 12: return [2 /*return*/];
                     }
                 });
             }); });
