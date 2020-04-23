@@ -1,7 +1,7 @@
 {
-  "name": "delayed-events",
+  "name": "@twincitiespublictelevision/delayed-events",
   "version": "1.0.0",
-  "description": "",
+  "description": "A library for sending and storing events in service workers",
   "dependencies": {
     "localforage": "^1.7.3"
   },
@@ -12,9 +12,18 @@
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11"
   },
+  "main": "dist/client.js",
   "scripts": {
     "build": "webpack"
   },
-  "author": "",
+  "author": "Twin Cities PBS",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/twincitiespublictelevision/xevents"
+  },
+  "bugs": {
+    "url": "https://github.com/twincitiespublictelevision/xevents/issues"
+  },
+  "homepage": "https://github.com/twincitiespublictelevision/xevents",
   "license": "Apache-2.0"
 }
