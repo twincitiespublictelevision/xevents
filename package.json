@@ -1,0 +1,21 @@
+{
+  "name": "delayed-events",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "dependencies": {
+    "localforage": "^1.7.3"
+  },
+  "devDependencies": {
+    "@types/node": "^13.13.1",
+    "ts-loader": "^7.0.0",
+    "typescript": "^3.8.3",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
+  },
+  "scripts": {
+    "build": "webpack"
+  },
+  "author": "",
+  "license": "Apache-2.0"
+}
