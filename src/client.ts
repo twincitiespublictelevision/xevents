@@ -12,8 +12,17 @@ function serialize(fn: Function) {
   return `(function() { return ${fn.toString()}; })()`;
 }
 
-function hasSW() {
-  return 'serviceWorker' in navigator && navigator.serviceWorker.controller !== null;
+function hasSWSupport() {
+  return 'serviceWorker' in navigator;
+}
+
+async function getSWController(): Promise<ServiceWorker | null> {
+  if (hasSWSupport()) {
+    let registration = await navigator.serviceWorker.ready;
+    return registration.active;
+  }
+  
+  return null;
 }
 
 const DEFAULT_OPTIONS: XEventHandlerOptions = {
@@ -43,14 +52,16 @@ async function register<T>(event: string, handler: XEventHandler<T>, options: Pa
     window.addEventListener('message', listener);
   });
 
-  if (hasSW()) {
-    navigator.serviceWorker.controller.postMessage(message);
+  let controller = await getSWController();
+  
+  if (controller) {
+    controller.postMessage(message);
   }
 
   return returnMessage;
 }
 
-function unregister(event: string, key: string) {
+async function unregister(event: string, key: string) {
   let message = makeMessage(XSysActions.Unregister, { event, key });
   let returnMessage = new Promise<string>((resolve, reject) => {
     let listener = (e: UnregisteredEvent) => {
@@ -63,18 +74,22 @@ function unregister(event: string, key: string) {
     window.addEventListener('message', listener);
   });
 
-  if (hasSW()) {
-    navigator.serviceWorker.controller.postMessage(message);
+  let controller = await getSWController();
+
+  if (controller) {
+    controller.postMessage(message);
   }
 
   return returnMessage;
 }
 
-function fire<T>(event: string, data: T) {
+async function fire<T>(event: string, data: T) {
   let message = makeMessage(XSysActions.Fire, { event, data });
 
-  if (hasSW()) {
-    navigator.serviceWorker.controller.postMessage(message);
+  let controller = await getSWController();
+
+  if (controller) {
+    controller.postMessage(message);
   }
 }
 
