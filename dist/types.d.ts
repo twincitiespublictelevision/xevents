@@ -64,6 +64,7 @@ export interface XEvent<T> {
 }
 export declare type XEventHandler<T> = (e: XEvent<T>) => any;
 export interface XEventHandlerOptions {
+    key?: string;
     repeat: number;
     state: {
         [k: string]: any;

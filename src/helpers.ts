@@ -1,3 +1,3 @@
 export function randomKey() {
-  return 'k';
+  return Math.floor((Date.now() + Math.random() * 10000)).toString(36);
 }

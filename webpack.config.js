@@ -1,6 +1,7 @@
+const webpack = require('webpack');
 const path = require('path');
 
-module.exports = {
+let config = target => ({
   entry: {
     client: './src/client.ts',
     sw: './src/sw.ts'
@@ -20,11 +21,21 @@ module.exports = {
   },
   output: {
     filename: '[name].js',
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, `dist/${target}`),
     libraryExport: 'default',
-    libraryTarget: 'commonjs'
+    libraryTarget: target
   },
   optimization: {
-    minimize: true
-  }
-};
+    minimize: false
+  },
+  plugins: [
+    new webpack.DefinePlugin({
+      VERSION: JSON.stringify(require('./package.json').version)
+    })
+  ]
+});
+
+module.exports = [
+  config('commonjs'),
+  config('var')
+]

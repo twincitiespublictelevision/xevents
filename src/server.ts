@@ -1,5 +1,6 @@
 import { XEventHandlerOptions, XEventHandler, XSysActions, XSysEvents } from "./types";
 import { readMessage } from "./message";
+import { randomKey } from "./helpers";
 
 interface Storage {
     getItem<T>(key: string, callback?: (err: any, value: T) => void): Promise<T>
@@ -30,10 +31,6 @@ export interface XEventSys {
 type XEventRegistration = [string, XEventHandlerOptions];
 type Register = Map<string, XEventRegistration>
 
-function randomKey() {
-  return 'k';
-}
-
 let createSys = (function wrap(sw: ServiceWorkerGlobalScope) {
   async function broadcastToClients(message: any) {
     let clients = await sw.clients.matchAll();
@@ -50,7 +47,7 @@ let createSys = (function wrap(sw: ServiceWorkerGlobalScope) {
       let register = await store.getItem<Register>(event);
       register = register ? register : new Map();
 
-      let key = randomKey();
+      let key = options.key || randomKey();
       register.set(key, [handler, options]);
 
       await store.setItem(event, register);

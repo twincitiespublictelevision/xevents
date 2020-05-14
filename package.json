@@ -1,6 +1,6 @@
 {
   "name": "@twincitiespublictelevision/xevents",
-  "version": "1.4.1",
+  "version": "1.5.2",
   "description": "A library for sending and storing events in service workers",
   "dependencies": {
     "localforage": "^1.7.3"
@@ -12,7 +12,7 @@
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11"
   },
-  "main": "dist/client.js",
+  "main": "dist/commonjs/client.js",
   "scripts": {
     "build": "webpack"
   },

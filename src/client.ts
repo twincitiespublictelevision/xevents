@@ -39,6 +39,7 @@ async function register<T>(event: string, handler: XEventHandler<T>, options: Pa
       options: { ...DEFAULT_OPTIONS, ...options }
     }
   );
+  
   let returnKey = randomKey();
   let returnMessage = new Promise<string>((resolve, reject) => {
     let listener = (e: RegisteredEvent) => {
